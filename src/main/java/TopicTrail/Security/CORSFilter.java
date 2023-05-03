@@ -11,7 +11,7 @@ public class CORSFilter implements WebFluxConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry){
         registry.addMapping("/**")
-                .allowedOrigins("exp://192.168.0.106:19000")
+                .allowedOrigins("exp://192.168.0.105:19000", "exp://192.168.0.105:19001")
                 .allowedMethods("GET", "POST")
                 .allowedHeaders("Authorization", "Cache-Control", "Content-Type")
                 .allowCredentials(true)

@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "exp://192.168.0.106:19000", exposedHeaders = "Authorization", allowCredentials = "true")
+@CrossOrigin(origins = {"exp://192.168.0.105:19001", "exp://192.168.0.105:19000"}, exposedHeaders = "Authorization", allowCredentials = "true")
 public class AuthenticationController {
     private final JWTUtil jwtUtil;
     private final UserService userService;
@@ -71,6 +71,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public Mono<User> register(@Valid User user){
+        System.out.println(user.getPassword());
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));

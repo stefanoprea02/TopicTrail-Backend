@@ -2,6 +2,7 @@ package TopicTrail.Security;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpCookie;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -24,16 +25,14 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
 
     @Override
     public Mono<SecurityContext> load(ServerWebExchange exchange) {
-        return Mono.justOrEmpty(exchange.getRequest().getCookies().get("jwt"))
-                .flatMap(httpCookies -> {
-                    httpCookies = httpCookies.stream().toList();
-                    String authToken = "q";
-                    for(HttpCookie cookie : httpCookies){
-                        if(cookie.getName().equals("jwt"))
-                            authToken = cookie.getValue();
-                    }
-                    Authentication authentication = new UsernamePasswordAuthenticationToken(authToken, authToken);
-                    return this.authenticationManager.authenticate(authentication).map(SecurityContextImpl::new);
-                });
+        String authToken = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        if (authToken == null || authToken.isBlank()) {
+            return Mono.empty();
+        }
+        if (authToken.startsWith("Bearer ")) {
+            authToken = authToken.substring(7);
+        }
+        Authentication authentication = new UsernamePasswordAuthenticationToken(authToken, authToken);
+        return this.authenticationManager.authenticate(authentication).map(SecurityContextImpl::new);
     }
 }
