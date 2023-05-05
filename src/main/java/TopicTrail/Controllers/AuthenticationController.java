@@ -19,7 +19,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = {"exp://192.168.0.105:19001", "exp://192.168.0.105:19000"}, exposedHeaders = "Authorization", allowCredentials = "true")
 public class AuthenticationController {
     private final JWTUtil jwtUtil;
     private final UserService userService;
