@@ -10,6 +10,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -25,4 +27,6 @@ public class Group {
     @Size(min = 3, max = 20, message = "Must be between 3 and 20 characters long")
     private String title;
     private String image;
+
+    private Set<String> posts = new HashSet<>();
 }

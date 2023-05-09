@@ -15,7 +15,6 @@ import java.util.UUID;
 
 @Controller
 @ResponseBody
-@CrossOrigin(origins = {"exp://192.168.0.105:19001", "exp://192.168.0.105:19000"}, exposedHeaders = "Authorization", allowCredentials = "true")
 public class PostController {
     private final PostService postService;
     private final JWTUtil jwtUtil;
@@ -54,4 +53,10 @@ public class PostController {
     Flux<Post> getPosts(){
         return postService.getPosts();
     }
+
+    @GetMapping("/post/all?nume={var}")
+    Flux<Post> getPostsSearch(@PathVariable String var) {
+        return postService.findByTitle(var);
+    }
+
 }

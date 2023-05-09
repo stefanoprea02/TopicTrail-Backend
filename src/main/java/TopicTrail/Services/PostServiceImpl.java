@@ -15,8 +15,8 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public Mono<Post> findByTitle(String title) {
-        return postRepository.findByTitle(title);
+    public Flux<Post> findByTitle(String title) {
+        return postRepository.findByTitleContainsIgnoreCase(title);
     }
 
     @Override

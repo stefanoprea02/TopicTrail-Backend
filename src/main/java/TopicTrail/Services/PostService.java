@@ -5,7 +5,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface PostService {
-    Mono<Post> findByTitle(String title);
+    Flux<Post> findByTitle(String title);
     Mono<Post> findById(String id);
     Mono<Void> deleteById(String id);
     Flux<Post> getPosts();
