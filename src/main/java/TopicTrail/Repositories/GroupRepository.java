@@ -8,6 +8,6 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface GroupRepository extends ReactiveMongoRepository<Group, String> {
     Mono<Group> save(Group group);
-    Mono<Void> delete(String Id);
+    Mono<Void> deleteById(String Id);
 
 }

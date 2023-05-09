@@ -21,6 +21,6 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Mono<Void> delete(String Id) {
-        return groupRepository.delete(Id);
+        return groupRepository.deleteById(Id);
     }
 }
