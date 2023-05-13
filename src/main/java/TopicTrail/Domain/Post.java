@@ -30,5 +30,6 @@ public class Post {
     private String content;
     private LocalDate date = LocalDate.now();
     private String username;
+    @NotBlank(message = "Must not be blank")
     private String group;
 }

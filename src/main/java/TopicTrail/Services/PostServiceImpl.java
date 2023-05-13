@@ -45,4 +45,9 @@ public class PostServiceImpl implements PostService{
                 .map(u -> post)
                 .flatMap(postRepository::save);
     }
+
+    @Override
+    public Flux<Post> findByGroup(String text) {
+        return postRepository.findByGroup(text);
+    }
 }

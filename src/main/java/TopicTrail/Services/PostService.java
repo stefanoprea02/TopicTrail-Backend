@@ -11,4 +11,5 @@ public interface PostService {
     Flux<Post> getPosts();
     Mono<Post> save(Post post);
     Mono<Post> update(Post post);
+    Flux<Post> findByGroup(String text);
 }
