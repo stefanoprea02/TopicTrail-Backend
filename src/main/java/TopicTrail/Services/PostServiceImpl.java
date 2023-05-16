@@ -1,6 +1,7 @@
 package TopicTrail.Services;
 
 import TopicTrail.Domain.Post;
+import TopicTrail.Domain.User;
 import TopicTrail.Repositories.PostRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -44,5 +45,16 @@ public class PostServiceImpl implements PostService{
         return postRepository.findById(post.getId())
                 .map(u -> post)
                 .flatMap(postRepository::save);
+    }
+
+    public Boolean checkFavorite(User user, Post post){
+        String idPost=post.getId();
+
+        if (user.getFavorites().contains(idPost) )
+        {
+            return Boolean.TRUE;
+        }
+        else return Boolean.FALSE;
+
     }
 }
