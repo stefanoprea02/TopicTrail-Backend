@@ -1,5 +1,6 @@
 package TopicTrail.Services;
 
+import TopicTrail.Domain.Comment;
 import TopicTrail.Domain.Post;
 import TopicTrail.Domain.User;
 import TopicTrail.Repositories.PostRepository;
@@ -45,6 +46,23 @@ public class PostServiceImpl implements PostService{
         return postRepository.findById(post.getId())
                 .map(u -> post)
                 .flatMap(postRepository::save);
+    }
+
+    @Override
+    public Mono<Post> addComment(String postId, String commentContent, String username) {
+        return postRepository.findById(postId)
+                .flatMap(post -> {
+                    Comment comment = new Comment();
+                    comment.setText(commentContent);
+                    comment.setUsername(username);
+                    post.getComments().add(comment);
+                    return postRepository.save(post);
+                });
+    }
+    @Override
+    public Flux<Comment> getComments(String postId) {
+        return postRepository.findById(postId)
+                .flatMapIterable(Post::getComments);
     }
 
     @Override
