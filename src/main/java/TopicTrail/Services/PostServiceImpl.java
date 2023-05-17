@@ -1,6 +1,7 @@
 package TopicTrail.Services;
 
 import TopicTrail.Domain.Post;
+import TopicTrail.Domain.User;
 import TopicTrail.Repositories.PostRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;

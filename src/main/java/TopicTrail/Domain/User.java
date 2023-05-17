@@ -37,6 +37,17 @@ public class User implements UserDetails {
     private String email;
     private List<Role> roles;
     private String token;
+
+    private List<String> favorites;
+//adaugare favorite
+    public List<String> getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(List<String> favorites) {
+        this.favorites = favorites;
+    }
+
     private Set<String> posts = new HashSet<>();
 
     @Override
