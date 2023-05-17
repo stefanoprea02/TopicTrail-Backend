@@ -32,7 +32,7 @@ public class PostController {
         this.jwtUtil = jwtUtil;
         this.userService = userService;
         this.groupService = groupService;
-        this.commentRepository = commentRepository
+        this.commentRepository = commentRepository;
     }
 
     @PostMapping("/post/new")

@@ -16,5 +16,4 @@ public interface PostService {
     Mono<Post> addComment(String postId, String commentContent, String username);
     Flux<Comment> getComments(String postId);
     Flux<Post> findByGroup(String text);
-    Boolean checkFavorite(User user, Post post);
 }
