@@ -6,10 +6,8 @@ import TopicTrail.Security.JWTUtil;
 import TopicTrail.Services.GroupService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -32,8 +30,17 @@ public class GroupController {
     }
 
     @GetMapping("/group/delete/{id}")
-    public Mono<Void>  deleteGroup(String id){
+    public Mono<Void> deleteGroup(@PathVariable String id){
         return groupService.delete(id);
     }
 
+    @GetMapping("/group/all")
+    public Flux<Group> getGroupsSearch(@RequestParam("groupTitle") String groupTitle){
+        return groupService.findByTitleContainsIgnoreCase(groupTitle);
+    }
+
+    @GetMapping("/group/{title}")
+    public Mono<Group> getGroup(@PathVariable String title){
+        return groupService.findByTitle(title);
+    }
 }

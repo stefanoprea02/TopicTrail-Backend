@@ -2,6 +2,7 @@ package TopicTrail.Services;
 
 import TopicTrail.Domain.Comment;
 import TopicTrail.Domain.Post;
+import TopicTrail.Domain.User;
 import TopicTrail.Repositories.PostRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -46,6 +47,7 @@ public class PostServiceImpl implements PostService{
                 .map(u -> post)
                 .flatMap(postRepository::save);
     }
+
     @Override
     public Mono<Post> addComment(String postId, String commentContent, String username) {
         return postRepository.findById(postId)
@@ -63,5 +65,8 @@ public class PostServiceImpl implements PostService{
                 .flatMapIterable(Post::getComments);
     }
 
-
+    @Override
+    public Flux<Post> findByGroup(String text) {
+        return postRepository.findByGroup(text);
+    }
 }

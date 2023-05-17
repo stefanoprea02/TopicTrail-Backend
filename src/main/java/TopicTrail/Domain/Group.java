@@ -27,6 +27,8 @@ public class Group {
     @Size(min = 3, max = 20, message = "Must be between 3 and 20 characters long")
     private String title;
     private String image;
-
+    @NotBlank(message = "Must not be blank")
+    @Size(min = 3, max = 20, message = "Must be between 3 and 20 characters long")
+    private String description;
     private Set<String> posts = new HashSet<>();
 }
