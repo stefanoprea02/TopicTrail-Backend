@@ -13,4 +13,5 @@ public interface PostRepository extends ReactiveMongoRepository<Post, String> {
     @Query("{'id' : ?0}")
     Mono<Post> findById(String id);
     Flux<Post> findByTitleContainsIgnoreCase(String text);
+    Flux<Post> findByGroup(String text);
 }

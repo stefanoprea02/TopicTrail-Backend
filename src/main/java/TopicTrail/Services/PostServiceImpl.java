@@ -47,14 +47,8 @@ public class PostServiceImpl implements PostService{
                 .flatMap(postRepository::save);
     }
 
-    public Boolean checkFavorite(User user, Post post){
-        String idPost=post.getId();
-
-        if (user.getFavorites().contains(idPost) )
-        {
-            return Boolean.TRUE;
-        }
-        else return Boolean.FALSE;
-
+    @Override
+    public Flux<Post> findByGroup(String text) {
+        return postRepository.findByGroup(text);
     }
 }
