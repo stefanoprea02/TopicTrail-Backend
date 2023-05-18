@@ -102,4 +102,36 @@ public class PostController {
 
         return savedComment;
     }
+
+    @GetMapping("/post/adFavorite/{adId}")
+    Mono<?> adFovorite(@PathVariable String adId, @RequestHeader(name = "Authorization") String authorizationHeader){
+        String token = authorizationHeader.substring(7);
+        Mono<User> user = userService.findByUsername(jwtUtil.getUsernameFromToken(token));
+
+        return user.flatMap(user1 -> {
+            user1.getFavorites().add(adId);
+            return userService.update(user1);
+        });
+    }
+
+    @GetMapping("/post/removeFavorite/{adId}")
+    Mono<?> removeFavorite(@PathVariable String adId, @RequestHeader(name = "Authorization") String authorizationHeader){
+        String token = authorizationHeader.substring(7);
+        Mono<User> user = userService.findByUsername(jwtUtil.getUsernameFromToken(token));
+
+        return user.flatMap(user1 -> {
+            user1.getFavorites().remove(adId);
+            return userService.update(user1);
+        });
+    }
+
+    @GetMapping("/post/checkFavorite/{adId}")
+    Mono<Boolean> checkFavorite(@PathVariable String adId, @RequestHeader(name = "Authorization") String authorizationHeader){
+        String token = authorizationHeader.substring(7);
+        Mono<User> user = userService.findByUsername(jwtUtil.getUsernameFromToken(token));
+
+        user = user.filter(user1 -> user1.getFavorites().contains(adId));
+
+        return user.hasElement();
+    }
 }

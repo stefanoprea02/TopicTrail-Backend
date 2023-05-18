@@ -38,13 +38,13 @@ public class User implements UserDetails {
     private List<Role> roles;
     private String token;
 
-    private List<String> favorites;
-//adaugare favorite
-    public List<String> getFavorites() {
+    private Set<String> favorites = new HashSet<>();
+
+    public Set<String> getFavorites() {
         return favorites;
     }
 
-    public void setFavorites(List<String> favorites) {
+    public void setFavorites(Set<String> favorites) {
         this.favorites = favorites;
     }
 
