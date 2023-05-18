@@ -49,23 +49,6 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public Mono<Post> addComment(String postId, String commentContent, String username) {
-        return postRepository.findById(postId)
-                .flatMap(post -> {
-                    Comment comment = new Comment();
-                    comment.setText(commentContent);
-                    comment.setUsername(username);
-                    post.getComments().add(comment);
-                    return postRepository.save(post);
-                });
-    }
-    @Override
-    public Flux<Comment> getComments(String postId) {
-        return postRepository.findById(postId)
-                .flatMapIterable(Post::getComments);
-    }
-
-    @Override
     public Flux<Post> findByGroup(String text) {
         return postRepository.findByGroup(text);
     }

@@ -87,7 +87,7 @@ public class PostController {
     }
 
     @PostMapping("/post/{postId}/comment/new")
-    public Mono<Comment> newComment(@PathVariable String postId, @RequestBody Comment comment, @RequestHeader(name="Authorization") String authorizationHeader){
+    public Mono<Comment> newComment(@Valid Comment comment, @PathVariable String postId, @RequestHeader(name="Authorization") String authorizationHeader){
         if(comment.getId()==null){
             comment.setId(UUID.randomUUID().toString());
         }
@@ -97,6 +97,12 @@ public class PostController {
         authorizationHeader=authorizationHeader.substring(7);
         String username= jwtUtil.getUsernameFromToken(authorizationHeader);
         comment.setUsername(username);
+
+        Mono<Post> post = postService.findById(postId);
+        post.flatMap(p -> {
+            p.getComments().add(comment.getId());
+            return postService.save(p);
+        });
 
         Mono<Comment> savedComment=commentRepository.save(comment);
 

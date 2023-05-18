@@ -11,9 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
@@ -34,5 +32,5 @@ public class Post {
     private String username;
     @NotBlank(message = "Must not be blank")
     private String group;
-    private List<Comment> comments = new ArrayList<>();
+    private Set<String> comments = new HashSet<>();
 }
