@@ -1,6 +1,7 @@
 package TopicTrail.Services;
 
 import TopicTrail.Domain.Group;
+import TopicTrail.Domain.Post;
 import TopicTrail.Repositories.GroupRepository;
 import TopicTrail.Repositories.PostRepository;
 import org.springframework.stereotype.Service;
@@ -33,5 +34,17 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Flux<Group> findByTitleContainsIgnoreCase(String title) {
         return groupRepository.findByTitleContainsIgnoreCase(title);
+    }
+
+    @Override
+    public Flux<Group> getGroups(){
+        return groupRepository.findAll();
+    }
+
+    @Override
+    public Mono<Group> update(Group group) {
+        return groupRepository.findById(group.getId())
+                .map(u -> group)
+                .flatMap(groupRepository::save);
     }
 }

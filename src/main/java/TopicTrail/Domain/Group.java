@@ -31,4 +31,5 @@ public class Group {
     @Size(min = 3, max = 20, message = "Must be between 3 and 20 characters long")
     private String description;
     private Set<String> posts = new HashSet<>();
+    private Boolean approved = false;
 }

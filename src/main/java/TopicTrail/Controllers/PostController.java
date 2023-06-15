@@ -16,6 +16,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -36,7 +37,7 @@ public class PostController {
     }
 
     @PostMapping("/post/new")
-    public Mono<Post> newPost(@Valid Post post, @RequestHeader(name = "Authorization") String authorizationHeader){
+    public Mono<?> newPost(@Valid Post post, @RequestHeader(name = "Authorization") String authorizationHeader){
         if(post.getId().length() != 36){
             post.setId(UUID.randomUUID().toString());
 
@@ -44,22 +45,7 @@ public class PostController {
             String username = jwtUtil.getUsernameFromToken(authorizationHeader);
             post.setUsername(username);
 
-            Mono<User> user = userService.findByUsername(username);
-            Mono<Group> group = groupService.findByTitle(post.getGroup());
-
-            user.flatMap(u -> {
-                u.getPosts().add(post.getId());
-                return userService.save(u);
-            });
-
-            group.flatMap(g -> {
-                g.getPosts().add(post.getId());
-                return groupService.save(g);
-            });
-
-            Mono<Post> savedPost = postService.save(post);
-
-            return savedPost;
+            return postService.save(post);
         }else
             return postService.update(post);
     }
@@ -98,46 +84,79 @@ public class PostController {
         String username= jwtUtil.getUsernameFromToken(authorizationHeader);
         comment.setUsername(username);
 
-        Mono<Post> post = postService.findById(postId);
-        post.flatMap(p -> {
-            p.getComments().add(comment.getId());
-            return postService.save(p);
-        });
-
-        Mono<Comment> savedComment=commentRepository.save(comment);
-
-        return savedComment;
+        return commentRepository.save(comment);
     }
 
-    @GetMapping("/post/adFavorite/{adId}")
-    Mono<?> adFovorite(@PathVariable String adId, @RequestHeader(name = "Authorization") String authorizationHeader){
+    @GetMapping("/post/removeComment/{postId}/{id}")
+    public Mono<?> removeComment(@PathVariable String postId, @PathVariable String id, @RequestHeader(name="Authorization") String authorizationHeader){
+        String token = authorizationHeader.substring(7);
+        List<String> roles = (List<String>) jwtUtil.getAllClaimsFromToken(token).get("role");
+        Mono<User> userMono = userService.findByUsername(jwtUtil.getUsernameFromToken(token));
+        if(roles.contains("ROLE_ADMIN")){
+            return commentRepository.deleteById(id);
+        }else{
+            return userMono.flatMap(u -> {
+                Mono<Post> postMono = postService.findById(postId);
+                return postMono.flatMap(p -> {
+                    if(u.getModerating().contains(p.getGroup()) || jwtUtil.getUsernameFromToken(token).equals(u.getUsername())) {
+                        return commentRepository.deleteById(id);
+                    }
+                    else
+                        return Mono.empty();
+                });
+            });
+        }
+    }
+
+    @GetMapping("/post/adFavorite/{postId}")
+    public Mono<?> adFovorite(@PathVariable String postId, @RequestHeader(name = "Authorization") String authorizationHeader){
         String token = authorizationHeader.substring(7);
         Mono<User> user = userService.findByUsername(jwtUtil.getUsernameFromToken(token));
 
         return user.flatMap(user1 -> {
-            user1.getFavorites().add(adId);
+            user1.getFavorites().add(postId);
             return userService.update(user1);
         });
     }
 
-    @GetMapping("/post/removeFavorite/{adId}")
-    Mono<?> removeFavorite(@PathVariable String adId, @RequestHeader(name = "Authorization") String authorizationHeader){
+    @GetMapping("/post/removeFavorite/{postId}")
+    public Mono<?> removeFavorite(@PathVariable String postId, @RequestHeader(name = "Authorization") String authorizationHeader){
         String token = authorizationHeader.substring(7);
         Mono<User> user = userService.findByUsername(jwtUtil.getUsernameFromToken(token));
 
         return user.flatMap(user1 -> {
-            user1.getFavorites().remove(adId);
+            user1.getFavorites().remove(postId);
             return userService.update(user1);
         });
     }
 
-    @GetMapping("/post/checkFavorite/{adId}")
-    Mono<Boolean> checkFavorite(@PathVariable String adId, @RequestHeader(name = "Authorization") String authorizationHeader){
+    @GetMapping("/post/checkFavorite/{postId}")
+    public Mono<Boolean> checkFavorite(@PathVariable String postId, @RequestHeader(name = "Authorization") String authorizationHeader){
         String token = authorizationHeader.substring(7);
         Mono<User> user = userService.findByUsername(jwtUtil.getUsernameFromToken(token));
 
-        user = user.filter(user1 -> user1.getFavorites().contains(adId));
+        user = user.filter(user1 -> user1.getFavorites().contains(postId));
 
         return user.hasElement();
+    }
+
+    @GetMapping("/post/delete/{postId}")
+    public Mono<?> removePost(@PathVariable String postId, @RequestHeader(name = "Authorization") String authorizationHeader){
+        String token = authorizationHeader.substring(7);
+        List<String> roles = (List<String>) jwtUtil.getAllClaimsFromToken(token).get("role");
+        Mono<User> userMono = userService.findByUsername(jwtUtil.getUsernameFromToken(token));
+        if(roles.contains("ROLE_ADMIN")){
+            return postService.deleteById(postId);
+        }else{
+            return userMono.flatMap(u -> {
+                Mono<Post> postMono = postService.findById(postId);
+                return postMono.flatMap(p -> {
+                    if(u.getModerating().contains(p.getGroup()) || jwtUtil.getUsernameFromToken(token).equals(u.getUsername()))
+                        return postService.deleteById(postId);
+                    else
+                        return Mono.empty();
+                });
+            });
+        }
     }
 }

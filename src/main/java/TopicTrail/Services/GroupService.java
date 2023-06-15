@@ -9,4 +9,6 @@ public interface GroupService {
     Mono<Void> delete(String Id);
     Mono<Group> findByTitle(String title);
     Flux<Group> findByTitleContainsIgnoreCase(String title);
+    Flux<Group> getGroups();
+    Mono<Group> update(Group group);
 }

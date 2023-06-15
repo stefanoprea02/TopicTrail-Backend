@@ -37,8 +37,8 @@ public class User implements UserDetails {
     private String email;
     private List<Role> roles;
     private String token;
-
     private Set<String> favorites = new HashSet<>();
+    private Set<String> moderating = new HashSet<>();
 
     public Set<String> getFavorites() {
         return favorites;
