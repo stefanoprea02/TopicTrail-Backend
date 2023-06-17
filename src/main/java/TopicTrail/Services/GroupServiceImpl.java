@@ -11,6 +11,10 @@ import reactor.core.publisher.Mono;
 @Service
 public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
+    @Override
+    public Mono<Group> findById(String id) {
+        return groupRepository.findById(id);
+    }
 
     public GroupServiceImpl(GroupRepository groupRepository) {
         this.groupRepository = groupRepository;

@@ -82,4 +82,36 @@ public class GroupController {
         }
         return Mono.empty();
     }
+
+    @GetMapping("/group/join/{groupId}")
+    public Mono<?> joinGroup(@PathVariable String groupId, @RequestHeader(name = "Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        Mono<User> user = userService.findByUsername(jwtUtil.getUsernameFromToken(token));
+
+        return user.flatMap(user1 -> {
+            user1.getGroups().add(groupId);
+            return userService.update(user1);
+        });
+    }
+
+    // Metoda pentru a părăsi un grup
+    @GetMapping("/group/leave/{groupId}")
+    public Mono<?> leaveGroup(@PathVariable String groupId, @RequestHeader(name = "Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        Mono<User> user = userService.findByUsername(jwtUtil.getUsernameFromToken(token));
+
+        return user.flatMap(user1 -> {
+            user1.getGroups().remove(groupId);
+            return userService.update(user1);
+        });
+    }
+    @GetMapping("/group/checkGroup/{groupId}")
+    public Mono<Boolean> checkGroup(@PathVariable String groupId, @RequestHeader(name = "Authorization") String authorizationHeader){
+        String token = authorizationHeader.substring(7);
+        Mono<User> user = userService.findByUsername(jwtUtil.getUsernameFromToken(token));
+
+        user = user.filter(user1 -> user1.getGroups().contains(groupId));
+
+        return user.hasElement();
+    }
 }
