@@ -39,11 +39,19 @@ public class User implements UserDetails {
     private String token;
     private Set<String> favorites = new HashSet<>();
     private Set<String> moderating = new HashSet<>();
+    private Set<String> groups= new HashSet<>();
+
+    public Set<String> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Set<String> groups) {
+        this.groups = groups;
+    }
 
     public Set<String> getFavorites() {
         return favorites;
     }
-
     public void setFavorites(Set<String> favorites) {
         this.favorites = favorites;
     }
