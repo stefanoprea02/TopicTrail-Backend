@@ -44,6 +44,7 @@ public class PostController {
             authorizationHeader = authorizationHeader.substring(7);
             String username = jwtUtil.getUsernameFromToken(authorizationHeader);
             post.setUsername(username);
+            post.setPostCreatedAt(LocalDate.now());
 
             return postService.save(post);
         }else
@@ -52,16 +53,16 @@ public class PostController {
 
     @GetMapping("/post/all")
     Flux<Post> getPosts(@RequestParam(required = false) String groupName, @RequestParam(required = false) String username,
-                        @RequestParam(required = false) String favorite, @RequestHeader(name = "Authorization") String authorizationHeader){
+                        @RequestParam(required = false) String favorite, @RequestHeader(name = "Authorization") String authorizationHeader) {
         String token = authorizationHeader.substring(7);
         Flux<Post> posts = postService.getPosts();
-        if(groupName != null)
+        if (groupName != null)
             posts = posts.filter(x -> x.getGroup().equals(groupName));
-        if(username != null)
+        if (username != null)
             posts = posts.filter(x -> x.getUsername().equals(username));
         return posts;
     }
-  
+
     @GetMapping("/post/all?nume={var}")
     Flux<Post> getPostsSearch(@PathVariable String var) {
         return postService.findByTitle(var);
