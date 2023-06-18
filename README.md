@@ -13,15 +13,14 @@ Aplicatia va fi dezvoltata in React/ React Native pentru front-end, iar partea d
 
 ## 🤖 USER STORIES:
 
-In calitate de utilizator, vreau sa pot cauta postari dupa anumite criterii. <br>
-In calitate de utilizator, vreau sa ma pot alatura comunitatilor cu aceleasi interese ca ale mele.<br>
+In calitate de utilizator, vreau sa pot cauta grupuri si utilizatori. <br>
 In calitate de utilizator, vreau sa pot salva o anumita postare ca sa o pot revedea.<br>
 In calitate de utilizator, vreau sa pot adauga postari noi. <br>
 In calitate de utilizator, vreau sa pot adauga comentarii la postarile altor persoane.<br>
 In calitate de utilizator, vreau sa pot  sa comunic cu alti utilizatori prin intermediul unei mesagerii private.<br>
-In calitate de utilizator, vreau sa pot sorta postarile si comentariile dupa relevanta.<br>
+In calitate de utilizator, vreau sa pot sorta postarile dupa titlu si data.<br>
 In calitate de utilizator, vreau sa pot crea grupuri noi, cu aprobarea administratorului.<br>
-In calitate de administrator, vreau sa pot sterge/aduaga/modifica postari, grupuri sau comentarii care nu corespund.<br>
+In calitate de administrator, vreau sa pot sterge/aduaga postari, grupuri sau comentarii care nu corespund.<br>
 In calitate de administrator, vreau sa pot manageria/sterge rolurile altor utilizatori.<br>
 In calitate de moderator al unui grup, vreau sa pot sterge/adauga/modifica postari sau comentarii care nu corespund.<br>
 In calitate de utilizator, vreau sa imi pot crea cont si eventual un profil public. <br>
@@ -29,9 +28,9 @@ In calitate de utilizator, vreau sa imi pot crea cont si eventual un profil publ
 ## ⭐ EPICS:
 
 Abilitatea de a adauga o postare noua.<br>
-Abilitatea de a putea cauta postari de interes.<br>
+Abilitatea de a putea cauta grupuri de interes.<br>
 Abilitatea de a comunica prin mesagerie cu alti utilizatori.<br>
-Abilitatea de a sorta comentariile/postarile in functie de relevanta.<br>
+Abilitatea de a sorta postarile.<br>
 Abilitatea de a crea un cont si un profil public.<br>
 Abilitatea de a crea grupuri noi.<br>
 Abilitatea de a salva postari.<br>
@@ -52,7 +51,6 @@ un cont de administrator care sa dea alte roluri participantilor<br>
 SHOULD HAVE:<br>
 abilitatea de a salva o postare<br>
 abilitatea de a adauga comentarii<br>
-editarea postarilor sau comentariilor deja adaugate<br>
 <br>
 NICE TO HAVE:<br>
 chat privat cu alti utilizatori<br>
@@ -70,7 +68,7 @@ profil public editabil<br>
 
 ## 📽️ Live demo pentru aplicație
 Demo-ul pentru aplicație se poate găsi la acest link: 
-[de adaugat](..)
+[Demo](https://youtu.be/EIcjyPk4Em4)
 
 ## 👥 Echipa care a realizat proiectul
 Oprea Mihai Stefan<br> 
