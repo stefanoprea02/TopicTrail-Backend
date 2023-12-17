@@ -3,14 +3,15 @@ package TopicTrail.Controllers;
 import TopicTrail.Domain.User;
 import TopicTrail.Security.JWTUtil;
 import TopicTrail.Services.UserService;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Base64;
 import java.util.List;
 
 @Controller
@@ -81,5 +82,43 @@ public class UserController {
             });
         }
         return Mono.empty();
+    }
+
+    @PostMapping("/user/bio")
+    public Mono changeBio(@RequestParam String bio, @RequestHeader(name = "Authorization") String authorizationHeader){
+        String token = authorizationHeader.substring(7);
+        Mono<User> userMono = userService.findByUsername(jwtUtil.getUsernameFromToken(token));
+
+        return userMono.flatMap(user -> {
+            user.setBio(bio);
+            return userService.update(user);
+        });
+    }
+
+    @PostMapping(value = "/user/changeImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Mono changeImage(@RequestPart("file") Mono<FilePart> file, @RequestHeader(name = "Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        Mono<User> userMono = userService.findByUsername(jwtUtil.getUsernameFromToken(token));
+
+        return userMono.flatMap(user -> file.flatMap(this::readBase64Content)
+                .doOnNext(profileImage -> user.setProfileImage(profileImage))
+                .flatMap(profileImage -> userService.update(user).thenReturn(profileImage)));
+    }
+
+    public Mono<String> readBase64Content(FilePart filePart) {
+        return filePart
+                .content()
+                .map(dataBuffer -> {
+                    byte[] bytes = new byte[dataBuffer.readableByteCount()];
+                    dataBuffer.read(bytes);
+                    return bytes;
+                })
+                .reduce(new byte[0], (acc, bytes) -> {
+                    byte[] result = new byte[acc.length + bytes.length];
+                    System.arraycopy(acc, 0, result, 0, acc.length);
+                    System.arraycopy(bytes, 0, result, acc.length, bytes.length);
+                    return result;
+                })
+                .map(completeBytes -> Base64.getEncoder().encodeToString(completeBytes));
     }
 }

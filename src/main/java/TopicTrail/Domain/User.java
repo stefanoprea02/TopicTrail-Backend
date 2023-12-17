@@ -39,7 +39,25 @@ public class User implements UserDetails {
     private String token;
     private Set<String> favorites = new HashSet<>();
     private Set<String> moderating = new HashSet<>();
-    private Set<String> groups= new HashSet<>();
+    private Set<String> groups = new HashSet<>();
+    private String profileImage;
+    private String bio;
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
 
     public Set<String> getGroups() {
         return groups;
