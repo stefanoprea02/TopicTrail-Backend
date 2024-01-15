@@ -110,7 +110,7 @@ public class PostController {
     }
 
     @GetMapping("/post/adFavorite/{postId}")
-    public Mono<?> adFovorite(@PathVariable String postId, @RequestHeader(name = "Authorization") String authorizationHeader){
+    public Mono<?> adFavorite(@PathVariable String postId, @RequestHeader(name = "Authorization") String authorizationHeader){
         String token = authorizationHeader.substring(7);
         Mono<User> user = userService.findByUsername(jwtUtil.getUsernameFromToken(token));
 
@@ -119,7 +119,14 @@ public class PostController {
             return userService.update(user1);
         });
     }
+    @GetMapping("/post/favorites")
+    public Flux<Post> getFavoritePosts(@RequestHeader(name = "Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        Mono<User> user = userService.findByUsername(jwtUtil.getUsernameFromToken(token));
 
+        return user.flatMapMany(user1 -> Flux.fromIterable(user1.getFavorites())
+                .flatMap(postService::findById));
+    }
     @GetMapping("/post/removeFavorite/{postId}")
     public Mono<?> removeFavorite(@PathVariable String postId, @RequestHeader(name = "Authorization") String authorizationHeader){
         String token = authorizationHeader.substring(7);
