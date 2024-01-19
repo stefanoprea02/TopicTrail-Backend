@@ -13,4 +13,5 @@ public interface GroupRepository extends ReactiveMongoRepository<Group, String> 
     Mono<Void> deleteById(String Id);
     Mono<Group> findByTitle(String title);
     Flux<Group> findByTitleContainsIgnoreCase(String title);
+    Flux<Group> findByDescriptionContainsIgnoreCase(String description);
 }

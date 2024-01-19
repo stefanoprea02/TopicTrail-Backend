@@ -41,6 +41,11 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public Flux<Group> findByDescriptionContainsIgnoreCase(String description) {
+        return groupRepository.findByDescriptionContainsIgnoreCase(description);
+    }
+
+    @Override
     public Flux<Group> getGroups(){
         return groupRepository.findAll();
     }

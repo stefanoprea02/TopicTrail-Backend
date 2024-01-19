@@ -11,10 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
@@ -42,9 +41,12 @@ public class GroupController {
     }
 
     @GetMapping("/group/all")
-    public Flux<Group> getGroupsSearch(@RequestParam("groupTitle") String groupTitle){
+    public Flux<Group> getGroupsSearch(@RequestParam("groupTitle") String groupTitle) {
         Flux<Group> groupFlux = groupService.findByTitleContainsIgnoreCase(groupTitle);
-        return groupFlux.filter(g -> g.getApproved().equals(true));
+        Flux<Group> groupFlux1 = groupService.findByDescriptionContainsIgnoreCase(groupTitle);
+
+        return Flux.concat(groupFlux, groupFlux1)
+                .filter(g -> g.getApproved().equals(true));
     }
 
     @GetMapping("/group/allnotapproved")
@@ -105,6 +107,19 @@ public class GroupController {
             return userService.update(user1);
         });
     }
+
+    @GetMapping("/group/findByUser/{userId}")
+    public Flux<Group> findByUser(@RequestHeader(name = "Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+
+        return userService.findByUsername(jwtUtil.getUsernameFromToken(token))
+                .flatMapMany(user -> groupService.getGroups()
+                        .filter(group -> user.getGroups().contains(group.getId()))
+                )
+                .subscribeOn(Schedulers.boundedElastic())
+                .onErrorResume(Exception.class, Flux::error);
+    }
+
     @GetMapping("/group/checkGroup/{groupId}")
     public Mono<Boolean> checkGroup(@PathVariable String groupId, @RequestHeader(name = "Authorization") String authorizationHeader){
         String token = authorizationHeader.substring(7);
